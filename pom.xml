@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-vertx</artifactId>
+    <packaging>pom</packaging>
+    <version>1.2.0</version>
+
+    <parent>
+        <groupId>com.smart.vertx</groupId>
+        <artifactId>smart-vertx-parent</artifactId>
+        <version>1.2.0</version>
+    </parent>
+
+    <modules>
+        <module>smart-vertx-web</module>
+        <module>smart-vertx-base</module>
+        <module>smart-vertx-common</module>
+        <module>smart-vertx-grpc</module>
+        <module>smart-vertx-tcp</module>
+        <module>smart-vertx-guice</module>
+        <module>smart-vertx-core</module>
+        <module>smart-vertx-database</module>
+        <module>smart-vertx-cache</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <project.release.version>${project.version}</project.release.version>
+            </properties>
+        </profile>
+    </profiles>
+
+
+</project>
