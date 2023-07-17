@@ -1,6 +1,8 @@
 package com.smart.vertx.annotation;
 
 
+import com.smart.vertx.enums.RequestMethod;
+
 import java.lang.annotation.*;
 
 /**

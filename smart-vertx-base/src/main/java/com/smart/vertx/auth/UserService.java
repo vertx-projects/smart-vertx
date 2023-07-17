@@ -2,7 +2,7 @@ package com.smart.vertx.auth;
 
 import com.smart.vertx.annotation.PathVariable;
 import com.smart.vertx.annotation.RequestMapping;
-import com.smart.vertx.annotation.RequestMethod;
+import com.smart.vertx.enums.RequestMethod;
 import com.smart.vertx.annotation.WebClient;
 import io.reactivex.rxjava3.core.Single;
 

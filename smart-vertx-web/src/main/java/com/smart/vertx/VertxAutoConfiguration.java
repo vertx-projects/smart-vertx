@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.smart.vertx.auth.AuthProperties;
 import com.smart.vertx.client.WebClientProperties;
 import com.smart.vertx.core.limit.LimitProperties;
+import com.smart.vertx.enums.VertxType;
 import com.smart.vertx.messagecodes.ProtoMessageCodec;
 import com.smart.vertx.core.OpentracingProperties;
 import com.smart.vertx.core.VertxHandler;
@@ -70,7 +71,7 @@ public class VertxAutoConfiguration {
         }
         vertxOptions.setClusterManager(clusterManager);
         log.info("vertx cluster is starting......");
-        return Vertx.rxClusteredVertx(vertxOptions).map(o -> deploy(deploymentOptions, o, HttpServerVerticle.class))
+        return Vertx.rxClusteredVertx(vertxOptions).map(o -> deploy(deploymentOptions, o, HttpServerVerticle.class, VertxType.VERTX_CLUSTER))
                 .doOnSuccess(s -> log.info("vertx cluster is started."))
                 .doOnError(throwable -> log.info("vertx cluster started error.{}", throwable.getLocalizedMessage(), throwable))
                 .blockingGet();
@@ -88,7 +89,7 @@ public class VertxAutoConfiguration {
     public Vertx standalone(VertxProperties config, VertxOptions vertxOptions, DeploymentOptions deploymentOptions) {
         log.info("vertx config: {}", JSON.toJSONString(config));
         Vertx vertx = Vertx.vertx(vertxOptions);
-        return deploy(deploymentOptions, vertx, HttpServerVerticle.class);
+        return deploy(deploymentOptions, vertx, HttpServerVerticle.class, VertxType.VERTX_STANDALONE);
     }
 
     @Bean
@@ -133,7 +134,7 @@ public class VertxAutoConfiguration {
                 .retryPolicy(RetryPolicy.exponentialDelayWithJitter(50L, 500L));
     }
 
-    private Vertx deploy(DeploymentOptions deploymentOptions, Vertx vertx, Class<?> clazz) {
+    private Vertx deploy(DeploymentOptions deploymentOptions, Vertx vertx, Class<?> clazz, VertxType type) {
         log.info("verticle [{}] is deploying......", clazz);
         vertx.rxDeployVerticle(clazz.getName(), deploymentOptions).map(s -> {
                     deployWorkVerticle(deploymentOptions, vertx);
@@ -142,7 +143,7 @@ public class VertxAutoConfiguration {
                     log.error(" verticle deploying error,{}", throwable.getLocalizedMessage());
                     return true;
                 }).doOnSuccess(s -> log.info("verticle [{}.{}] is deployed.", clazz, s))
-                .subscribe(o -> log.info("系统所有模块启动完成:服务状态健康,可对外服务,PID={}.", o), throwable -> {
+                .subscribe(o -> log.info("[{}]系统所有模块启动完成:服务状态健康,可对外服务,PID={}.", type, o), throwable -> {
                     log.error("启动服务失败", throwable);
                     System.exit(1);
                 });
@@ -154,7 +155,7 @@ public class VertxAutoConfiguration {
             Map<String, WorkVerticle> workVerticle = SuperVerticle.springContext.getBeansOfType(WorkVerticle.class);
             workVerticle.values().forEach(v -> {
                 deploymentOptions.setWorker(v.worker()).setHa(v.ha());
-                deploy(deploymentOptions, vertx, v.getClass());
+                deploy(deploymentOptions, vertx, v.getClass(), VertxType.VERTX_WORK);
                 log.info("work verticle {} started.", v);
             });
         } catch (Exception ignored) {

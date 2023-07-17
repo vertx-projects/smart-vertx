@@ -50,7 +50,7 @@ public class VertxTcpAutoConfiguration {
         }).doOnSuccess(s -> {
             log.info("verticle [{}] is deployed.", s);
         }).subscribe(o -> {
-            log.info("系统所有模块启动完成,服务状态健康,可对外服务,{}", o);
+            log.info("[TCP-SERVER]系统所有模块启动完成,服务状态健康,可对外服务,{}", o);
         }, throwable -> {
             log.error("启动服务失败", throwable);
             System.exit(1);
@@ -71,7 +71,7 @@ public class VertxTcpAutoConfiguration {
         }).doOnSuccess(s -> {
             log.info("verticle [{}] is deployed.", s);
         }).subscribe(o -> {
-            log.info("系统所有模块启动完成,服务状态健康,可对外服务,{}", o);
+            log.info("[TCP-CLIENT]系统所有模块启动完成,服务状态健康,可对外服务,{}", o);
         }, throwable -> {
             log.error("启动服务失败", throwable);
             System.exit(1);

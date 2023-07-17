@@ -1,4 +1,4 @@
-package com.smart.vertx.annotation;
+package com.smart.vertx.enums;
 
 /**
  * @author peng.bo
