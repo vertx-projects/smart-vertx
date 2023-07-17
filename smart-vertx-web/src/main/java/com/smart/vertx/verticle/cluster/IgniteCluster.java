@@ -94,7 +94,7 @@ public class IgniteCluster implements ClusterManagerStrategy {
 
         @Override
         public List<MetricFamilySamples> collect() {
-            //ignite指标监控
+            //ignite集群状态指标监控
             GaugeMetricFamily clusterMetrics = new GaugeMetricFamily("cluster_metric",
                     "ignite cluster metric.",
                     Arrays.asList("measure", "cluster_status", "cluster_tag"));
@@ -102,7 +102,7 @@ public class IgniteCluster implements ClusterManagerStrategy {
                     ignite.cluster().state().name(), ignite.cluster().tag()), ignite.cluster().nodes().size());
             clusterMetrics.addMetric(List.of("cluster_top_version",
                     ignite.cluster().state().name(), ignite.cluster().tag()), ignite.cluster().topologyVersion());
-
+            //ignite集群缓存指标监控
             GaugeMetricFamily cacheMetrics = new GaugeMetricFamily("cache_metric", "ignite cache metric.", Arrays.asList("measure", "cache"));
             for (String c : ignite.cacheNames()) {
                 CacheMetrics metrics = ignite.cache(c).localMetrics();
@@ -110,6 +110,7 @@ public class IgniteCluster implements ClusterManagerStrategy {
                 cacheMetrics.addMetric(Arrays.asList("put_average_time", c), metrics.getAveragePutTime());
                 cacheMetrics.addMetric(Arrays.asList("size", c), metrics.getCacheSize());
             }
+            //ignite集群节点指标监控
             GaugeMetricFamily nodeMetrics = new GaugeMetricFamily("node_metric",
                     "ignite node metric.",
                     Arrays.asList("measure", "node"));
