@@ -33,13 +33,11 @@ import io.vertx.rxjava3.core.eventbus.Message;
 import io.vertx.rxjava3.ext.web.Route;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
-import io.vertx.rxjava3.ext.web.common.WebEnvironment;
 import io.vertx.rxjava3.ext.web.handler.*;
 import io.vertx.rxjava3.micrometer.PrometheusScrapingHandler;
 import io.vertx.rxjava3.sqlclient.Tuple;
 import io.vertx.tracing.opentracing.OpenTracingUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
@@ -82,12 +80,6 @@ public class HttpServerVerticle extends SuperVerticle {
      */
     private Single<Boolean> buildHandler(Router router, Single<Map<String, List<Tuple>>> map, VertxProperties props) {
         return map.map(s -> {
-            String[] profiles = springContext.getEnvironment().getActiveProfiles();
-            if (ArrayUtils.isNotEmpty(profiles)) {
-                System.setProperty(WebEnvironment.SYSTEM_PROPERTY_NAME, profiles[0]);
-            }
-            return s;
-        }).map(s -> {
             s.forEach((k, v) -> {
                 for (Tuple tuple : v) {
                     RequestMapping mapping = tuple.get(RequestMapping.class, 0);

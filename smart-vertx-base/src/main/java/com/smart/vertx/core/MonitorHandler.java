@@ -33,11 +33,11 @@ public class MonitorHandler implements DisposableBean, ApplicationListener<Conte
             serviceDiscovery.close();
             log.info("start stop vertx");
             vertx.close().doOnError(throwable -> {
-                log.info("##############vertx stop error.{}###########", throwable.toString());
+                log.debug("##############vertx stop error.{}###########", throwable.toString());
             }).doOnComplete(() -> {
-                log.info("##############vertx stop success.###########");
+                log.debug("##############vertx stop success.###########");
             }).doFinally(() -> {
-                log.info("##############vertx stop over.###########");
+                log.debug("##############vertx stop over.###########");
             }).subscribe();
         }));
     }
@@ -46,25 +46,25 @@ public class MonitorHandler implements DisposableBean, ApplicationListener<Conte
     public void destroy() {
         serviceDiscovery.close();
         vertx.close().doOnError(throwable -> {
-            log.info("##############vertx disposable error.{}###########", throwable.toString());
+            log.debug("##############vertx disposable error.{}###########", throwable.toString());
         }).doOnComplete(() -> {
-            log.info("##############vertx disposable success.###########");
+            log.debug("##############vertx disposable success.###########");
         }).doFinally(() -> {
-            log.info("##############vertx disposable over.###########");
+            log.debug("##############vertx disposable over.###########");
         }).subscribe();
-        log.info("shutdown hook, disposable bean");
+        log.info("disposable bean shutdown hook.");
     }
 
     @Override
     public void onApplicationEvent(@NonNull ContextClosedEvent contextClosedEvent) {
         serviceDiscovery.close();
         vertx.close().doOnError(throwable -> {
-            log.info("##############vertx close error.{}###########", throwable.toString());
+            log.debug("##############vertx close error.{}###########", throwable.toString());
         }).doOnComplete(() -> {
-            log.info("##############vertx close success.###########");
+            log.debug("##############vertx close success.###########");
         }).doFinally(() -> {
-            log.info("##############vertx close over.###########");
+            log.debug("##############vertx close over.###########");
         }).subscribe();
-        log.info("shutdown hook, ContextClosedEvent");
+        log.info("context closed event shutdown hook.");
     }
 }

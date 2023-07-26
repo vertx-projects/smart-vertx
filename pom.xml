@@ -24,6 +24,7 @@
         <module>smart-vertx-core</module>
         <module>smart-vertx-database</module>
         <module>smart-vertx-cache</module>
+        <module>smart-vertx-graphQL</module>
     </modules>
 
     <profiles>

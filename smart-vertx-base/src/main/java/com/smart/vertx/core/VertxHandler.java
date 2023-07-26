@@ -13,8 +13,10 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 import io.vertx.micrometer.VertxPrometheusOptions;
+import io.vertx.rxjava3.ext.web.common.WebEnvironment;
 import io.vertx.tracing.opentracing.OpenTracingOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -42,9 +44,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @ComponentScan("com.smart.vertx.core")
 public class VertxHandler implements ApplicationContextAware {
-
+    private ApplicationContext springContext;
     @Bean
-    public CollectorRegistry collectorRegistry(Environment environment) {
+    public CollectorRegistry collectorRegistry() {
         return CollectorRegistry.defaultRegistry;
     }
 
@@ -126,11 +128,12 @@ public class VertxHandler implements ApplicationContextAware {
         return depOptions;
     }
 
-
-    private ApplicationContext springContext;
-
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        String[] profiles = applicationContext.getEnvironment().getActiveProfiles();
+        if (ArrayUtils.isNotEmpty(profiles)) {
+            System.setProperty(WebEnvironment.SYSTEM_PROPERTY_NAME, profiles[0]);
+        }
         this.springContext = applicationContext;
     }
 }
